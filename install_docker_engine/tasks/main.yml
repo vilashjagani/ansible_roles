@@ -15,5 +15,13 @@
  
   - name: Install the latest version of Docker
     apt: name=docker-ce state=latest  update_cache=yes force=yes
-
-
+  
+  - name: insert proxy detail in docker to download images from Docker Hub through internet
+    lineinfile: 
+      path: /etc/default/docker
+      insertafter: '^#export'
+      line: 'export {{ item }}={{ http_proxy }}'
+    with_items:
+         - http_proxy
+         - https_proxy
+    notify: restart docker daemon 
