@@ -1,0 +1,25 @@
+{
+  "CN": "kubernetes",
+  "hosts": [
+    "192.168.33.240",
+    "192.168.33.7",
+    "192.168.33.11",
+    "192.168.33.12",
+    "10.144.172.26",
+    "127.0.0.1",
+    "kubernetes.default"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Portland",
+      "O": "Kubernetes",
+      "OU": "Cluster",
+      "ST": "Oregon"
+    }
+  ]
+}
