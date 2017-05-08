@@ -31,7 +31,13 @@
           cd /etc/ansible/roles/setting_up_CA_TLS_Cert/files/;
           /usr/local/bin/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes \
           kube-proxy-csr.json | /usr/local/bin/cfssljson -bare kube-proxy
-    tags: localhost 
+    tags: localhost
+
+  - name: copy kubernetes-csr.json from template to file directory
+    template: 
+      src: kubernetes-csr.j2
+      dest: /etc/ansible/roles/setting_up_CA_TLS_Cert/files/kubernetes-csr.json 
+      mode: 644 
 
   - name: Create the kubernetes server certificate  will generate kubernetes-key.pem kubernetes.pem
     shell: >
