@@ -8,7 +8,7 @@
   - name: Create the TLS Bootstrap Token
     shell: >
            BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ');
-           echo '$BOOTSTRAP_TOKEN,kubelet-bootstrap,10001,"system:kubelet-bootstrap"' > /etc/ansible/roles/setting_up_TLS_RBAC/files/token.csv;
+           echo $BOOTSTRAP_TOKEN,kubelet-bootstrap,10001,'"system:kubelet-bootstrap"' > /etc/ansible/roles/setting_up_TLS_RBAC/files/token.csv;
            /usr/local/bin/kubectl config set-cluster kubernetes  --certificate-authority=/etc/ansible/roles/setting_up_CA_TLS_Cert/files/ca.pem \
            --embed-certs=true --server=https://{{ public_ip }}:6443 --kubeconfig=/etc/ansible/roles/setting_up_TLS_RBAC/files/bootstrap.kubeconfig;
            kubectl config set-credentials kubelet-bootstrap --token=${BOOTSTRAP_TOKEN} \
