@@ -1,9 +1,12 @@
 ---
-  - name: bind the kubelet-bootstrap user to the system:node-bootstrapper cluster role
-    local_action: ssh {{ ctl0_ip }} 'kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap'
+  - name: bind the kubelet-bootstrap user to the system node-bootstrapper cluster role
+    local_action: >
+                 shell ssh {{ ctl0_ip }} 'kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap'
+    ignore_errors: True
     tags:
       - worker
-  - name: create directories kubelet,kube-proxy,kubernetes
+
+  - name: create directories kubelet kube-proxy kubernetes
     file: 
       path: /var/lib/{{ item }}
       state: directory
@@ -13,18 +16,20 @@
          - kube-proxy
          - kubernetes
     tags:
-      - wotker
-  - name: copy bootstrap.kubeconfig kube-proxy.kubeconfig ca.pem in proper place
-    command: cp /root/{{item.src}} /var/lib/{{item.dest}}/
-    with_itmes:
-      - { src: 'bootstrap.kubeconfig', dest: 'kubelet'}
-      - { src: 'kube-proxy.kubeconfig', dest: 'kube-proxy'}
-      - { src: 'ca.pem', dest: 'kubernetes'}
-              
+      - worker
+
+  - name: copy files  in proper place
+    shell: cp /root/{{ item.src }} /var/lib/{{ item.dest }}/
+    with_items:
+         - { src: 'bootstrap.kubeconfig', dest: 'kubelet'}
+         - { src: 'kube-proxy.kubeconfig', dest: 'kube-proxy'}
+         - { src: 'ca.pem', dest: 'kubernetes'}
     tags:
-      - worker 
+      - worker
+ 
   - name: Install Docker
     shell: >
+           service docker stop;
            wget https://get.docker.com/builds/Linux/x86_64/docker-1.12.6.tgz -O /root/docker-1.12.6.tgz;
            tar -xvf /root/docker-1.12.6.tgz;
            cp /root/docker/docker* /usr/bin/ ;
@@ -59,7 +64,7 @@
     shell: > 
            wget https://storage.googleapis.com/kubernetes-release/release/v1.6.1/bin/linux/amd64/{{item}}  -O /usr/bin/{{item}};
            chmod 0755 /usr/bin/{{item}}
-    with_itmes:
+    with_items:
          - kubectl
          - kube-proxy
          - kubelet
@@ -83,5 +88,3 @@
       - Start the kube-proxy service
     tags:
       - worker
- 
-     

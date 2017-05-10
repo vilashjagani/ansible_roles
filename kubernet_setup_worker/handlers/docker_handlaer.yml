@@ -2,6 +2,6 @@
   - name:  Start Docker deamon
     systemd:
       name: docker
-      state: restarted
+      state: started
       enabled: True
       daemon_reload: yes
