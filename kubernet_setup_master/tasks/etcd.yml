@@ -25,11 +25,7 @@
     template:
       src: etcd_service.j2 
       dest: /etc/systemd/system/etcd.service 
+    notify:
+      - Start the etcd service
     tags:
       - controller  
- 
-  - name: Start the etcd server
-    shell: >
-           systemctl daemon-reload;
-           systemctl enable etcd;
-           systemctl restart etcd    
