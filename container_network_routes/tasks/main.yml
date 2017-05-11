@@ -1,0 +1,18 @@
+---
+  - name: copy script on local desk
+    copy:
+      src: ip_script.sh
+      dest: /tmp/ip_script.sh
+      mode: 0755
+  - name: Get the Routing Table
+    local_action: shell ssh {{inventory_hostname}} '/tmp/ip_script.sh'
+
+  - name: set routes for other worker nodes
+    shell: >
+           cat /tmp/nodes-routes | grep -v {{ansible_default_ipv4.address}} > /tmp/other-nodes-routes;
+           for i in `cat /tmp/other-nodes-routes | awk {'print $1'}` ; 
+           do grep $i /tmp/other-nodes-routes; 
+           route add -net `grep $i /tmp/other-nodes-routes | awk {'print $2'}` gw `grep $i /tmp/other-nodes-routes | awk {'print $1'}`;
+           done
+            
+ 
