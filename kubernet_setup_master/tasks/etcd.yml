@@ -6,15 +6,9 @@
     tags:
       - controller
  
-  - name: Download etcd binaries
-    get_url: 
-      url: https://github.com/coreos/etcd/releases/download/v3.1.4/etcd-v3.1.4-linux-amd64.tar.gz 
-      dest: /root/etcd-v3.1.4-linux-amd64.tar.gz
-    tags:
-      - controller
-
   - name: Download and Install the etcd binaries
     shell: >
+           wget https://github.com/coreos/etcd/releases/download/v3.1.4/etcd-v3.1.4-linux-amd64.tar.gz -O /root/etcd-v3.1.4-linux-amd64.tar.gz;
            tar -xvf /root/etcd-v3.1.4-linux-amd64.tar.gz;
            mv /root/etcd-v3.1.4-linux-amd64/etcd* /usr/bin/ ;
            mkdir -p /var/lib/etcd;
@@ -28,4 +22,6 @@
     notify:
       - Start the etcd service
     tags:
-      - controller  
+      - controller 
+  - name: restart etcd service
+    service: name=etcd state=restarted 
